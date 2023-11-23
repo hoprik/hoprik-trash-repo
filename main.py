@@ -54,10 +54,10 @@ def getFilters(mode):
 
 def getPath():
     global _sure_list, _lang
-    console.writeN(console.color("red")+_lang["choice_photo"])
+    console.sleep_typing(console.color("red")+_lang["choice_photo"], 5)
     data = console.openFileDialog()
     if data != "":
-        console.writeN(console.color("green")+_lang["choice_photo_give"].replace("%s", data))
+        console.sleep_typing(console.color("green")+_lang["choice_photo_give"].replace("%s", data), 5)
         if console.sure(_lang):
             return data
     getPath()
@@ -66,7 +66,7 @@ def getPath():
 def modef():
     global _mode_list, _mode, _lang
     if _mode == -1:
-        console.writeN(console.color("purple")+_lang["mode_choice"])
+        console.sleep_typing(console.color("purple")+_lang["mode_choice"], 5)
         mode_int = input()
         try:
             return _mode_list[mode_int][0]
@@ -77,9 +77,9 @@ def modef():
 def menu(mode):
     if _mode_list[str(mode)][1] == "exit":
         exit()
-    console.writeN(console.color("purple")+_lang[_mode_list[str(mode)][1]])
+    console.sleep_typing(console.color("purple")+_lang[_mode_list[str(mode)][1]], 5)
     count = _lang[_mode_list[str(mode)][1]].split(")")
-    console.writeN(console.color("purple")+_lang["exit_mode"].replace("%s", str(len(count))))
+    console.sleep_typing(console.color("purple")+_lang["exit_mode"].replace("%s", str(len(count))), 5)
     activate(_mode)
 
 
@@ -94,7 +94,7 @@ def img_menu(img: Image.Image):
         if choice == 3:
             return
     except:
-        console.writeN("Ошибка")
+        console.sleep_typing(_lang["error"], 5)
     img_menu(img)
 
 
@@ -107,22 +107,22 @@ def activate(mode):
             model = modef()
             menu(model)
             return
-        console.writeN(console.color("red")+_lang["description_filter"] + getFilters(mode)[choice - 1].description())
+        console.sleep_typing(console.color("red")+_lang["description_filter"] + getFilters(mode)[choice - 1].description(), 5)
     except Exception:
-        console.writeN(console.color("red")+_lang["error"])
+        console.sleep_typing(console.color("red")+_lang["error"], 5)
         activate(mode)
     if not console.sure(_lang):
         return menu(mode)
     data = getPath()
     img = getFilters(mode)[choice - 1].aplay(Image.open(data))
-    console.writeN(console.color("purple")+_lang["menu_img"])
+    console.sleep_typing(console.color("purple")+_lang["menu_img"], 5)
     img_menu(img)
     menu(mode)
 
 
 _lang = engine.return_lang()
 
-console.writeN(console.color("YELLOW") + f"""
+console.sleep_typing(console.color("YELLOW") + f"""
 {_lang["create_program"]}
      __ __   ___   ____  ____   ____  __  _
     |  |  | /   \ |    \|    \ |    ||  |/ ]
@@ -132,9 +132,9 @@ console.writeN(console.color("YELLOW") + f"""
     |  |  ||     ||  |  |  .  \ |  | |  .  |
     |__|__| \___/ |__|  |__|\_||____||__|\_|
           {_lang["intro"]}
-""")
+""", 5)
 
-console.writeN(console.color("green")+_lang["welcome"])
+console.sleep_typing(console.color("green")+_lang["welcome"], 5)
 
 _mode = modef()
 menu(_mode)

@@ -108,7 +108,7 @@ class Console:
         return False
 
     def getLang(self):
-        console.writeN(self.color("yellow")+"Hello choose a language\n1) Russia \n2) English")
+        console.sleep_typing(self.color("yellow")+"Hello choose a language\n1) Russia \n2) English", 5)
         data = input("")
         if console.getString(data, 2, 50):
             return json.load(open("translate.json", encoding="utf-8"))["ru"]
@@ -159,7 +159,7 @@ class Text(Filter):
             "./font/Attractive-Heavy.ttf",
             "./font/Impact.ttf"
         ]
-        console.writeN(_lang["text_write"])
+        console.sleep_typing(_lang["text_write"], 5)
         text = input()
         draw = ImageDraw.Draw(image)
         ttf = ImageFont.truetype(font[random.randint(0, 2)], 32)
@@ -192,7 +192,7 @@ class Blur(Filter):
         try:
             sila = int(input(_lang["blur_stroung"]))
         except Exception:
-            console.writeN(console.color("red")+_lang["error"])
+            console.sleep_typing(console.color("red")+_lang["error"], 5)
             self.aplay(img)
         return img.filter(ImageFilter.GaussianBlur(sila))
 
