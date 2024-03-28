@@ -25,8 +25,12 @@ def sendMessage(message: telebot.types.Message, text: str,
 @bot.message_handler(commands=['start'])
 def send_welcome(message: telebot.types.Message) -> None:
     bot.send_message(message.chat.id,
-                     'Привет, добро пожаловать в бота сценариста. Подробности проекта можно узнать /help')
+                     'Привет, добро пожаловать в бота сценариста. Подробности проекта можно узнать /help, а что бы начать генерировать задачу /new_story')
 
+
+@bot.message_handler(commands=['help'])
+def help_info(message: telebot.types.Message) -> None:
+    sendMessage("Привет это телеграм бот, написанный за 3.2 часа. Ты в нем сможешь сгенерировать историю")
 
 @bot.message_handler(commands=["new_story"])
 def new_story(message: telebot.types.Message) -> None:
