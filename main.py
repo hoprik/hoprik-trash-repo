@@ -34,6 +34,11 @@ def tts_handle(message: telebot.types.Message) -> None:
         bot_message(message, "Ошибка! У вас закончились токены")
         return
 
+    if len(message.text) < 200:
+        bot_message(message, "Ошибка! Вы отправили текст больше 200 символов!")
+        bot.register_next_step_handler(message, tts_handle)
+        return
+
     answer, data = API.text_to_speech(message.text)
 
     if answer:
