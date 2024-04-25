@@ -13,12 +13,11 @@ class API_YANDEX:
         self.iam_token = iam_token
         self.folder_id = folder_id
 
-    def speech_to_text(self, data: bytes) -> (bytes, str):
+    def speech_to_text(self, data: bytes) -> (bool, str):
         """
         Функция для расшифравки (STT)
-        :param text:
-        :param voice:
-        :return:
+        :param data: байты файла
+        :return: Ответ готовый, текст
         """
         params = {
             "lang": "ru-RU",
@@ -44,9 +43,9 @@ class API_YANDEX:
     def text_to_speech(self, text, voice='marina') -> (bool, bytes):
         """
         Функция для синтеза речи (TTS)
-        :param text:
-        :param voice:
-        :return:
+        :param text: текст синтеза
+        :param voice: голос помощника
+        :return: Ответ готовый, байты файла
         """
 
         headers = {
