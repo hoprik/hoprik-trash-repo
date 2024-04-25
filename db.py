@@ -20,3 +20,4 @@ class SQL:
 
     def take_away_symbols(self, user_id, symbols):
         self.conn.execute("""UPDATE users SET symbols=? where user_id=?""", (self.get_tokens(user_id)-symbols, user_id,))
+        self.conn.commit()
