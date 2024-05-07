@@ -7,7 +7,7 @@ import telebot
 import api
 import db
 
-API = api.API_YANDEX(api.get_token(), os.environ.get("FOLDER_ID"))
+API = api.API_YANDEX(api.get_token(), os.environ.get("FOLDER_ID"), os.environ.get("GPT"))
 DB = db.SQL()
 bot = telebot.TeleBot(os.environ.get('TOKEN'))
 
@@ -70,7 +70,7 @@ def tts_handle(message: telebot.types.Message) -> None:
         bot.register_next_step_handler(message, tts_handle)
         return
 
-    if len(message.text) < DB.get_tokens(message.from_user.id):
+    if len(message.text) < DB.get_symbols(message.from_user.id):
         bot_message(message, "Ошибка! У вас закончились токены")
         return
 

@@ -7,14 +7,14 @@ class SQL:
         self.create_table()
 
     def create_table(self):
-        self.conn.execute("""CREATE TABLE IF NOT EXISTS users (user_id INT UNIQUE, symbols INT, blocks INT)""")
+        self.conn.execute("""CREATE TABLE IF NOT EXISTS users (user_id INT UNIQUE, symbols INT, blocks INT, tokens INT)""")
         self.conn.commit()
 
     def create_user(self, user_id):
-        self.conn.execute("""INSERT INTO IF NOT EXISTS users (user_id, symbols, blocks) VALUES (?,?,?)""", (user_id, 1000, 16,))
+        self.conn.execute("""INSERT INTO IF NOT EXISTS users (user_id, symbols, blocks, tokens) VALUES (?,?,?,?)""", (user_id, 1000, 16, 10000))
         self.conn.commit()
 
-    def get_tokens(self, user_id) -> int:
+    def get_symbols(self, user_id) -> int:
         cors = self.conn.execute("""SELECT symbols FROM users WHERE user_id=?""", user_id)
         return cors.fetchone()[0]
 
@@ -22,10 +22,18 @@ class SQL:
         cors = self.conn.execute("""SELECT blocks FROM users WHERE user_id=?""", user_id)
         return cors.fetchone()[0]
 
+    def get_tokens(self, user_id) -> int:
+        cors = self.conn.execute("""SELECT blocks FROM users WHERE user_id=?""", user_id)
+        return cors.fetchone()[0]
+
     def take_away_symbols(self, user_id, symbols):
-        self.conn.execute("""UPDATE users SET symbols=? where user_id=?""", (self.get_tokens(user_id)-symbols, user_id,))
+        self.conn.execute("""UPDATE users SET symbols=? where user_id=?""", (self.get_symbols(user_id)-symbols, user_id,))
         self.conn.commit()
 
     def take_away_blocks(self, user_id, blocks):
         self.conn.execute("""UPDATE users SET blocks=? where user_id=?""", (self.get_blocks(user_id)-blocks, user_id,))
+        self.conn.commit()
+
+    def take_away_tokens(self, user_id, symbols):
+        self.conn.execute("""UPDATE users SET tokens=? where user_id=?""", (self.get_tokens(user_id)-symbols, user_id,))
         self.conn.commit()
