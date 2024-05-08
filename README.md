@@ -9,3 +9,7 @@ https://t.me/amoron_bot
 ## Авторизиция
 
 Для работы нужен иметь логин и пароль в система hoprik auth. Чтобы получить доступ напишите gptsqizzy@gmail.com. Или он лежит в файл login&password.txt
+
+## Source
+
+https://github.com/hoprik/hoprik-trash-repo/tree/the_end
