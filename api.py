@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 
@@ -13,10 +15,24 @@ class Messanger:
         self.messages = []
 
     def add_message(self, role: str, message: str):
-        self.messages.append({"role": role, "message": message})
+        self.messages.append({"role": role, "text": message})
 
     def get_messages(self) -> [{}]:
         return self.messages
+
+    def get_messages_str(self) -> str:
+        wrapper = {
+            "messages": self.messages
+        }
+        return json.dumps(wrapper)
+
+    def add_messages_by_json(self, messages: {"": [{}]}):
+        for message in messages["messages"]:
+            self.messages.append(message)
+
+    def add_messages_by_string(self, messages: str):
+        wrapper = json.loads(messages)
+        self.add_messages_by_json(wrapper)
 
 
 class API_YANDEX:
@@ -86,31 +102,48 @@ class API_YANDEX:
         :return: Ответ готовый, значение
         """
 
-        url = f"https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+        url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
         headers = {
-            'Authorization': f'Bearer {self.iam_token}',
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.iam_token}",
         }
-        data = {
-            "modelUri": f"gpt://{self.folder_id}/{self.gpt}/latest",
+        payload = {
+            "modelUri": "gpt://b1g18jbemvgi6dkjue7h/yandexgpt-lite",
             "completionOptions": {
                 "stream": False,
-                "temperature": 0.6,
-                "maxTokens": 100
+                "temperature": 0.1,
+                "maxTokens": "150"
             },
             "messages": messages.get_messages()
         }
+        print(messages.get_messages())
 
-        response = requests.request("POST", url, data=data, headers=headers)
+        response = requests.request("POST", url, json=payload, headers=headers)
+
+        print(response.text)
 
         if response.status_code == 200:
             result = response.json()['result']['alternatives'][0]['message']['text']
             token = response.json()['result']['usage']['totalTokens']
-            return True, [result, token]
+            return True, (result, token)
         elif response.status_code == 401:
             self.iam_token = get_token()
             return self.gpt_ask(messages)
         else:
+            print(response.text)
             return False, "При запросе в YandexGpt возникла ошибка"
 
+    def count_tokens(self, text: str) -> int:
+        token = self.iam_token
+        folder_id = self.folder_id
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+        return len(
+            requests.post(
+                "https://llm.api.cloud.yandex.net/foundationModels/v1/tokenize",
+                json={"modelUri": f"gpt://{folder_id}/yandexgpt/latest", "text": text},
+                headers=headers
+            ).json()['tokens'])
 # made by hoprik
