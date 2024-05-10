@@ -37,8 +37,8 @@ def bot_edit(message: telebot.types.Message, text: str, keyboard: Optional[teleb
 @bot.message_handler(commands=['start'])
 def send_welcome(message: telebot.types.Message) -> None:
     if DB.get_user(message.from_user.id) is not None:
-        bot_message(message, "Привет, я amoron, я тебе буду помогать ты меня только спроси, и я тебе помогу!\nТакже ты "
-                             "можешь прописать /tts и отправь текст, и /stt только отправь голосовое")
+        bot_message(message, "Привет, я amoron, я тебе буду помогать ты меня только спроси просто напиши мне или запиши голосове сообщение, и я тебе помогу!\nТакже ты "
+                             "можешь прописать /tts и отправь текст, и /stt и отправь голосовое сообщение")
     else:
         bot_message(message,
                     "Внимание, этот бот в стадии разработке. Для подключение к нему вам нужно авторизироватся в системе hoprik auth. Для авторизации узнайте логин и пароль и нажмите кнопку авторизироватся",
@@ -50,7 +50,7 @@ def answer(message: telebot.types.Message):
     data = json.loads(message.web_app_data.data)
     if data["success"]:
         bot_message(message, "Привет, я amoron, я тебе буду помогать ты меня только спроси, и я тебе помогу!\nТакже ты "
-                             "можешь прописать /tts и отправь текст, и /stt только отправь голосовое",
+                             "можешь прописать /tts и отправь текст, и /stt только отправь голосовое. Чтобы узнать сколько осталось токенов пропиши /profile",
                     keyboard=remove_keyboard())
         if DB.get_user_by_token(data["token"]) is None:
             DB.create_user(message.from_user.id, data["token"])
@@ -60,24 +60,36 @@ def answer(message: telebot.types.Message):
 
 @bot.message_handler(commands=['tts'])
 def send_tts(message: telebot.types.Message) -> None:
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     bot_message(message, "Отправьте текст")
     bot.register_next_step_handler(message, tts_handle)
 
 
 @bot.message_handler(commands=['stt'])
 def send_stt(message: telebot.types.Message) -> None:
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     bot_message(message, "Отправьте голосовое сообщение")
     bot.register_next_step_handler(message, stt_handle)
 
 
 @bot.message_handler(commands=["profile"])
 def send_profile(message: telebot.types.Message) -> None:
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     user_id, symbols, blocks, tokens, token, messages = DB.get_user(message.from_user.id)
     bot_message(message, f"{message.from_user.first_name},\nСимволов: {symbols}\nБлоков: {blocks}\nТокенов: {tokens}")
 
 
 @bot.message_handler(content_types=['text'])
 def gpt_text(message: telebot.types.Message) -> None:
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     messanger = api.Messanger()
     if len(messanger.get_messages()) == 0:
         messanger.add_message("system", "Ты добрый бот помощник, ты отзываешься всем на помощь")
@@ -94,6 +106,9 @@ def gpt_text(message: telebot.types.Message) -> None:
 
 @bot.message_handler(content_types=['voice'])
 def gpt_voice(message: telebot.types.Message) -> None:
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     messanger = api.Messanger()
     if len(messanger.get_messages()) == 0:
         messanger.add_message("system", "Ты добрый бот помощник, ты отзываешься всем на помощь")
@@ -139,6 +154,9 @@ def gpt_voice(message: telebot.types.Message) -> None:
 
 
 def handle_gpt(message: telebot.types.Message, messanger: api.Messanger) -> (bool,str):
+    if DB.get_user(message.from_user.id) is None:
+        bot_message(message, "Вы не авторизовались! Пропиши /start для авторизации")
+        return
     answer, data = API.gpt_ask(messanger)
     if not answer:
         return answer, data
