@@ -6,8 +6,6 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Filter
 from aiogram.types import Message
 
-import main
-
 # Load the bot token from a file
 with open("token.txt") as file:
     TOKEN = file.readline().strip().split("|")[1]
