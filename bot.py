@@ -3,8 +3,10 @@ import os
 from aiogram import Bot, Dispatcher, html, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart, Filter
+from aiogram.filters import CommandStart, Filter, Command
 from aiogram.types import Message
+
+import apiStory
 
 # Load the bot token from a file
 with open("token.txt") as file:
@@ -19,8 +21,18 @@ if not os.path.exists(STORIES_FOLDER):
 
 
 def get_file_id():
-    only_files = next(os.walk(STORIES_FOLDER))[2]
-    return len(only_files)
+    return len(os.listdir("stories"))
+
+
+def get_name_files():
+    text = ""
+    for i in os.listdir("stories"):
+        if i != "story.txt":
+            file = i.split(".")[0].split("-")
+            file_id = file[0]
+            author = file[1]
+            text += f"file: {file_id} author: {author}\n"
+    return text
 
 
 # Custom filter for video messages
@@ -36,7 +48,8 @@ class BotApp:
 
         # Command handler for the /start command
         self.dp.message(CommandStart())(self.command_start_handler)
-
+        self.dp.message(Command("fileList"))(self.command_get_video_list)
+        self.dp.message(Command("sendStory"))(self.command_send_story)
         # Video message handler
         self.dp.message(Video())(self.video_handler)
 
@@ -52,8 +65,19 @@ class BotApp:
         username = message.from_user.username
         if message.forward_from:
             username = message.forward_from.username
-        await self.bot.download_file(file.file_path, os.path.join(STORIES_FOLDER, f"{get_file_id()+1}-{username}.mp4"))
-        await message.answer("Video downloaded successfully!")
+        file_id_in_system = get_file_id()
+        await self.bot.download_file(file.file_path,
+                                     os.path.join(STORIES_FOLDER, f"{file_id_in_system}-{username}.mp4"))
+        await message.answer("Видео было успешной скачано")
+
+    async def command_get_video_list(self, message: Message) -> None:
+        await message.answer(get_name_files())
+
+    async def command_send_story(self, message: Message) -> None:
+        story_id, author = apiStory.update_story()
+        story = apiStory.find_story(story_id)
+        await apiStory.main(story, author)
+        message.answer("Видео было отправлено!")
 
     # Main function to start the bot
     async def main(self) -> None:

@@ -1,3 +1,4 @@
+import os
 from math import trunc
 from telethon import TelegramClient, functions, types
 from telethon.sessions import StringSession
@@ -36,3 +37,23 @@ async def main(filename: str, author: str):
     client = TelegramClient(StringSession(token), 28216737, "d3e76ec9f802203c2d7d98ae0e06030d")
     async with client:
         await send_story(client, filename, author)
+
+def update_story():
+    with open("stories/story.txt", "r+") as f:
+        story = 1
+        try:
+            story = int(f.read())
+            f.write(str(story))
+        except:
+            f.write("1")
+        return story
+
+
+def find_story(story):
+    files = os.listdir("stories")
+    for i in files:
+        file_id = i.split("-")[0]
+        if story == file_id:
+            return i, i.split("-")[1]
+    return ""
+
