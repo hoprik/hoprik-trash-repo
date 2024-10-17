@@ -65,6 +65,5 @@ class BotApp:
 
 # Entry point of the script
 if __name__ == "__main__":
-    asyncio.run(main.start())
     app = BotApp(TOKEN)
     asyncio.run(app.main())
