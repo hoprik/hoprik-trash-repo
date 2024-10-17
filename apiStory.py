@@ -3,7 +3,6 @@ from math import trunc
 from telethon import TelegramClient, functions, types
 from telethon.sessions import StringSession
 from videoprops import get_video_properties
-import asyncio
 
 
 def get_data_video(file: str):
@@ -24,7 +23,7 @@ async def send_story(client: TelegramClient, filename: str, author: str):
             ]
         ),
         privacy_rules=[types.InputPrivacyValueAllowAll()],
-        caption=f'Видео от {author}',
+        caption=f'Видео от @{author}',
     ))
 
     await client.send_message('me', 'Отправил историю!')
@@ -36,16 +35,18 @@ async def main(filename: str, author: str):
 
     client = TelegramClient(StringSession(token), 28216737, "d3e76ec9f802203c2d7d98ae0e06030d")
     async with client:
-        await send_story(client, filename, author)
+        await send_story(client, "stories/"+filename, author)
+
 
 def update_story():
     with open("stories/story.txt", "r+") as f:
-        story = 1
+        story = f.read()
+    with open("stories/story.txt", "w") as f:
         try:
-            story = int(f.read())
-            f.write(str(story))
+            f.write(str(int(story)+1))
         except:
             f.write("1")
+        f.close()
         return story
 
 
@@ -54,6 +55,5 @@ def find_story(story):
     for i in files:
         file_id = i.split("-")[0]
         if story == file_id:
-            return i, i.split("-")[1]
+            return i, i.split("-")[1].split(".")[0]
     return ""
-

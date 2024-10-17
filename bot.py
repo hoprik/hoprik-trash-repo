@@ -74,10 +74,10 @@ class BotApp:
         await message.answer(get_name_files())
 
     async def command_send_story(self, message: Message) -> None:
-        story_id, author = apiStory.update_story()
-        story = apiStory.find_story(story_id)
+        story_id = apiStory.update_story()
+        story, author = apiStory.find_story(story_id)
         await apiStory.main(story, author)
-        message.answer("Видео было отправлено!")
+        await message.answer("Видео было отправлено!")
 
     # Main function to start the bot
     async def main(self) -> None:

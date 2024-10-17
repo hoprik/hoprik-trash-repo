@@ -15,8 +15,8 @@ while True:
         if timeSend[hour] == 0 and day:
             day = False
         timeSend[hour] = True
-        story_id, author = apiStory.update_story()
-        story = apiStory.find_story(story_id)
+        story_id = apiStory.update_story()
+        story, author = apiStory.find_story(story_id)
         apiStory.main(story, author)
     if hour == 0 and not day:
         timeSend = {8: False, 16: False, 22: False}
