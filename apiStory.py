@@ -4,23 +4,14 @@ from telethon import TelegramClient, functions, types
 from telethon.sessions import StringSession
 from videoprops import get_video_properties
 
-
-def get_data_video(file: str):
-    props = get_video_properties(file)
-    return props["width"], props["height"], trunc(float(props["duration"]))
-
-
 async def send_story(client: TelegramClient, filename: str, author: str):
     uploaded_file = await client.upload_file(filename)
-    width, height, duration = get_data_video(filename)
     await client(functions.stories.SendStoryRequest(
         peer=types.InputPeerSelf(),
         media=types.InputMediaUploadedDocument(
             file=uploaded_file,
             mime_type='video/mp4',
-            attributes=[
-                types.DocumentAttributeVideo(duration=duration, w=width, h=height)
-            ]
+            attributes=[]
         ),
         privacy_rules=[types.InputPrivacyValueAllowAll()],
         caption=f'Видео от @{author}',

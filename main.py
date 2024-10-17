@@ -1,5 +1,5 @@
 import datetime
-import os
+import asyncio
 import time
 import apiStory
 
@@ -17,7 +17,7 @@ while True:
         timeSend[hour] = True
         story_id = apiStory.update_story()
         story, author = apiStory.find_story(story_id)
-        apiStory.main(story, author)
+        asyncio.run(apiStory.main(story, author))
     if hour == 0 and not day:
         timeSend = {8: False, 16: False, 22: False}
         day = True
