@@ -31,7 +31,7 @@ def get_name_files():
             file = i.split(".")[0].split("-")
             file_id = file[0]
             author = file[1]
-            text += f"file: {file_id} author: {author}\n"
+            text += f"file: {file_id} author: @{author}\n"
     return text
 
 
