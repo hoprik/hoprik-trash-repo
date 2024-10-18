@@ -14,7 +14,7 @@ async def send_story(client: TelegramClient, filename: str, author: str):
             attributes=[]
         ),
         privacy_rules=[types.InputPrivacyValueAllowAll()],
-        caption=f'Видео от @{author}',
+        caption=f'Видео от @{author}\n❗️Видео отправлено через hoprik story autouploader. Подробности в тгк❗️',
     ))
 
     await client.send_message('me', 'Отправил историю!')
