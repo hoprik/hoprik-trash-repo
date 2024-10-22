@@ -68,7 +68,7 @@ class BotApp:
         file_id_in_system = get_file_id()
         await self.bot.download_file(file.file_path,
                                      os.path.join(STORIES_FOLDER, f"{file_id_in_system}-{username}.mp4"))
-        await message.answer("Видео было успешной скачано")
+        await message.answer("Видео было успешно скачано")
 
     async def command_get_video_list(self, message: Message) -> None:
         await message.answer(get_name_files())
