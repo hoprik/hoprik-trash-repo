@@ -1,0 +1,5 @@
+venv
+.gigaide
+.idea
+barcodes.pdf
+barcodeGenerator.iml
