@@ -1,0 +1,8 @@
+.gigaide
+.idea
+.minecraft
+build
+dist
+launcher1.iml
+start.spec
+venv
